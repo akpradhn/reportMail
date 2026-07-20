@@ -1,0 +1,54 @@
+# Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+*.env
+*.local
+*credentials*.json
+*secrets*.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local email scripts that may contain SMTP credentials
+examples/coldmail.py
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+
+# Coverage, build, and package artifacts
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Generated local report previews
+examples/email_preview.html
+
+# Editors, notebooks, and operating-system metadata
+.idea/
+.vscode/
+*.swp
+*.swo
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
