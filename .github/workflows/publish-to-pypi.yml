@@ -1,0 +1,59 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - name: Install package and release tools
+        run: python -m pip install ".[dev]"
+      - name: Run release checks
+        run: |
+          pytest
+          ruff check .
+          mypy src/reportmail
+      - name: Verify release tag matches package version
+        run: |
+          PACKAGE_VERSION=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/reportmail/__init__.py)
+          test "v${PACKAGE_VERSION}" = "${GITHUB_REF_NAME}"
+      - name: Build wheel and source distribution
+        run: python -m build
+      - name: Check distribution metadata
+        run: twine check --strict dist/*
+      - uses: actions/upload-artifact@v5
+        with:
+          name: python-package-distributions
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    name: Publish distribution to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/reportmail
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution
+        uses: pypa/gh-action-pypi-publish@release/v1

@@ -179,13 +179,16 @@ Titles, labels, prose, table values, alt text, preheaders, and footers are escap
 ## Development
 
 ```bash
-git clone <repository-url>
-cd reportmail
+git clone https://github.com/akpradhn/reportMail.git
+cd reportMail
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 pytest
 ruff check .
+mypy src/reportmail
+python -m build
+twine check dist/*
 ```
 
 Runnable reports live in `examples/`; each writes an HTML file beside the script.
